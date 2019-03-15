@@ -1,0 +1,19 @@
+{
+    "name": "overlordz/phpqrcode",
+    "description": "phpqrcode",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "overlordz",
+            "email": "mengyuan_ghost@126.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "PhpQrcode\\": "src/",
+            "Tests\\": "test/"
+        }
+    }
+}
