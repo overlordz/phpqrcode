@@ -43,7 +43,7 @@ class QRimage
                 $image = self::image($frame, $pixelPerPoint, $outerFrame);
                 break;
             case 'background':
-                $image = self::imageBackground($frame, $pixelPerPoint, $outerFrame, realpath($other['filePath']), $alpha);
+                $image = self::imageBackground($frame, $pixelPerPoint, $outerFrame, realpath($other['filePath']), $alpha,$other);
                 break;
             case 'char':
                 $image = self::imageChar($frame, $other['char']);
@@ -108,7 +108,7 @@ class QRimage
 
     //用图片作为整张二维码的背景图
     //$pixelPerPoint 原图中每点
-    private static function imageBackground($frame, $pixelPerPoint, $outerFrame = 4, $backGroundPath, $alpha)
+    private static function imageBackground($frame, $pixelPerPoint, $outerFrame = 4, $backGroundPath, $alpha,$other)
     {
         $h = count($frame);
         $w = strlen($frame[0]);
@@ -180,7 +180,7 @@ class QRimage
         $target_image = ImageCreate($imgW * self::$magSize, $imgH * self::$magSize);
         ImageCopyResized($target_image, $base_image, 0, 0, 0, 0, $imgW * self::$magSize + 2 * $outerFrame, $imgH * self::$magSize + 2 * $outerFrame, $imgW, $imgH);
         ImageDestroy($base_image);
-        self::$tempQRcode = 'temp' . DIRECTORY_SEPARATOR.'tempQRcode'.DIRECTORY_SEPARATOR.basename(self::$outputFile);
+        self::$tempQRcode = $other['saveDir'].basename(self::$outputFile);
         ImagePng($target_image, self::$tempQRcode);
         return self::imageMerage($target_image, $backGroundPath);
     }
@@ -223,7 +223,7 @@ class QRimage
         $background = self::backgroundResized($img);
 
         if ($background instanceof \Imagick) {
-            $targetQRcode = new \Imagick(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.self::$tempQRcode);
+            $targetQRcode = new \Imagick(realpath(self::$tempQRcode));
             $background = $background->coalesceImages();
             do {
                 $background->compositeImage($targetQRcode,\Imagick::COMPOSITE_DEFAULT,0,0);
@@ -232,7 +232,7 @@ class QRimage
             // do {
             //     $qrcode->compositeImage($targetQRcode,\Imagick::COMPOSITE_DEFAULT,0,0);
             // } while ($qrcode->nextImage());
-            $background = $background->deconstructImages();             
+            $background = $background->deconstructImages();
             $background->writeImages(self::$outputFile, true);
         } else{
             imagecopyResized($background, $targetQRcode, 0, 0, 0, 0, imagesx($background), imagesy($background), self::$qrcodesW, self::$qrcodesH);
