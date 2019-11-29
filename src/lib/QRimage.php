@@ -57,21 +57,14 @@ class QRimage
             echo $image;
             return;
         }
-
-//        if ($saveandprint === true) {
-//            ImagePng($image, $filename);
-//            header("Content-type: image/png");
-//            ImagePng($image);
-//        } else {
-        if (!($background instanceof \Imagick)) {
-            ImagePng($image, $filename);
-            return $image;
+        if ($image) {
+            return true;
+        }else{
+            return false;
         }
-//        }
-        ImageDestroy($image);
     }
 
-    //----------------------------------------------------------------------
+    //---------------------------------------   -------------------------------
     public static function jpg($frame, $filename = false, $pixelPerPoint = 8, $outerFrame = 4, $q = 85)
     {
         $image = self::image($frame, $pixelPerPoint, $outerFrame);
